@@ -53,25 +53,24 @@ int main() {
         system("cls");
         risovat_pole(pole);
         int v;
-        cout << "Èãðîê " << igrok << ", âûáåðèòå êëåòêó (1-9): ";
+        cout << "Ð˜Ð³Ñ€Ð¾Ðº " << igrok << ", Ð²Ñ‹Ð±ÐµÑ€Ð¸Ñ‚Ðµ ÐºÐ»ÐµÑ‚ÐºÑƒ (1-9): ";
         cin >> v;
         if (v < 1 || v > 9) {
-            cout << "Íåâåðíûé íîìåð!\n";
+            cout << "ÐÐµÐ²ÐµÑ€Ð½Ñ‹Ð¹ Ð½Ð¾Ð¼ÐµÑ€!\n";
             system("pause");
             continue;
         }
         if (!hod(pole, v, igrok)) {
-            cout << "Êëåòêà çàíÿòà!\n";
+            cout << "ÐšÐ»ÐµÑ‚ÐºÐ° Ð·Ð°Ð½ÑÑ‚Ð°!\n";
             system("pause");
             continue;
         }
         if (pobeda(pole, igrok)) {
             system("cls");
             risovat_pole(pole);
-            cout << "Èãðîê " << igrok << " ïîáåäèë!\n";
+            cout << "Ð˜Ð³Ñ€Ð¾Ðº " << igrok << " Ð¿Ð¾Ð±ÐµÐ´Ð¸Ð»!\n";
             konec = true;
-        }
-        else {
+        } else {
             bool nichya = true;
             for (int i = 0; i < 3; i++)
                 for (int j = 0; j < 3; j++)
@@ -80,16 +79,15 @@ int main() {
             if (nichya) {
                 system("cls");
                 risovat_pole(pole);
-                cout << "Íè÷üÿ!\n";
+                cout << "ÐÐ¸Ñ‡ÑŒÑ!\n";
                 konec = true;
-            }
-            else {
+            } else {
                 igrok = (igrok == 'X') ? 'O' : 'X';
             }
         }
     }
-    cout << "\nÍàæìèòå Enter äëÿ âûõîäà...";
-    int _;
-    cin >> _;
+    cout << "\nÐÐ°Ð¶Ð¼Ð¸Ñ‚Ðµ Enter Ð´Ð»Ñ Ð²Ñ‹Ñ…Ð¾Ð´Ð°...";
+    cin.ignore();
+    cin.get();
     return 0;
 }
