@@ -4,12 +4,13 @@
 
 using namespace std;
 
-void risovat_pole(char p[3][3]) {
+
+void displayBoard(char board[3][3]) {
     cout << "\n";
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; ++i) {
         cout << " ";
-        for (int j = 0; j < 3; j++) {
-            cout << p[i][j];
+        for (int j = 0; j < 3; ++j) {
+            cout << board[i][j];
             if (j < 2) cout << " | ";
         }
         cout << "\n";
@@ -18,75 +19,106 @@ void risovat_pole(char p[3][3]) {
     cout << "\n";
 }
 
-bool pobeda(char p[3][3], char ig) {
-    for (int i = 0; i < 3; i++) {
-        if (p[i][0] == ig && p[i][1] == ig && p[i][2] == ig) return true;
-        if (p[0][i] == ig && p[1][i] == ig && p[2][i] == ig) return true;
-    }
-    if (p[0][0] == ig && p[1][1] == ig && p[2][2] == ig) return true;
-    if (p[0][2] == ig && p[1][1] == ig && p[2][0] == ig) return true;
-    return false;
-}
 
-bool hod(char p[3][3], int n, char ig) {
-    int r = (n - 1) / 3;
-    int c = (n - 1) % 3;
-    if (p[r][c] != 'X' && p[r][c] != 'O') {
-        p[r][c] = ig;
+bool checkWin(char board[3][3], char player) {
+    
+    for (int i = 0; i < 3; ++i) {
+        if ((board[i][0] == player && board[i][1] == player && board[i][2] == player) ||
+            (board[0][i] == player && board[1][i] == player && board[2][i] == player)) {
+            return true;
+        }
+    }
+    
+    if ((board[0][0] == player && board[1][1] == player && board[2][2] == player) ||
+        (board[0][2] == player && board[1][1] == player && board[2][0] == player)) {
         return true;
     }
     return false;
 }
 
-int main() {
-    setlocale(LC_ALL, "Russian");
-    char pole[3][3];
-    int num = 1;
-    for (int i = 0; i < 3; i++)
-        for (int j = 0; j < 3; j++)
-            pole[i][j] = '0' + num++;
 
-    char igrok = 'X';
-    bool konec = false;
+bool makeMove(char board[3][3], int cell, char player) {
+    int row = (cell - 1) / 3;
+    int col = (cell - 1) % 3;
 
-    while (!konec) {
-        system("cls");
-        risovat_pole(pole);
-        int v;
-        cout << "Игрок " << igrok << ", выберите клетку (1-9): ";
-        cin >> v;
-        if (v < 1 || v > 9) {
-            cout << "Неверный номер!\n";
-            system("pause");
-            continue;
-        }
-        if (!hod(pole, v, igrok)) {
-            cout << "Клетка занята!\n";
-            system("pause");
-            continue;
-        }
-        if (pobeda(pole, igrok)) {
-            system("cls");
-            risovat_pole(pole);
-            cout << "Игрок " << igrok << " победил!\n";
-            konec = true;
-        } else {
-            bool nichya = true;
-            for (int i = 0; i < 3; i++)
-                for (int j = 0; j < 3; j++)
-                    if (pole[i][j] != 'X' && pole[i][j] != 'O')
-                        nichya = false;
-            if (nichya) {
-                system("cls");
-                risovat_pole(pole);
-                cout << "Ничья!\n";
-                konec = true;
-            } else {
-                igrok = (igrok == 'X') ? 'O' : 'X';
+    if (board[row][col] != 'X' && board[row][col] != 'O') {
+        board[row][col] = player;
+        return true;
+    }
+    return false;
+}
+
+
+bool isDraw(char board[3][3]) {
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            if (board[i][j] != 'X' && board[i][j] != 'O') {
+                return false;
             }
         }
     }
-    cout << "\nНажмите Enter для выхода...";
+    return true;
+}
+
+int main() {
+    setlocale(LC_ALL, "Russian");
+
+    char board[3][3];
+    int cellNum = 1;
+
+
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            board[i][j] = '0' + cellNum++;
+        }
+    }
+
+    char currentPlayer = 'X';
+
+    cout << "Добро пожаловать в Крестики-Нолики!\n";
+
+    while (true) {
+        system("cls");
+        displayBoard(board);
+
+        int choice;
+        cout << "Игрок " << currentPlayer << ", выберите клетку (1–9): ";
+        cin >> choice;
+
+        if (choice < 1 || choice > 9) {
+            cout << "Ошибка: введите число от 1 до 9!\n";
+            system("pause");
+            continue;
+        }
+
+
+        if (!makeMove(board, choice, currentPlayer)) {
+            cout << "Эта клетка уже занята!\n";
+            system("pause");
+            continue;
+        }
+
+
+        if (checkWin(board, currentPlayer)) {
+            system("cls");
+            displayBoard(board);
+            cout << "Поздравляем! Игрок " << currentPlayer << " победил!\n";
+            break;
+        }
+
+
+        if (isDraw(board)) {
+            system("cls");
+            displayBoard(board);
+            cout << "Ничья! Все клетки заполнены.\n";
+            break;
+        }
+
+
+        currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+    }
+
+    cout << "\nИгра завершена. Нажмите Enter для выхода...\n";
     cin.ignore();
     cin.get();
     return 0;
